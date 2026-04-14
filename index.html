@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Психология викторинасы — Конфликт</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1e1b4b, #312e81, #1e293b);
+    color: #fff;
+    padding: 30px 20px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+    background: linear-gradient(90deg, #a78bfa, #22d3ee);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+    color: #c7d2fe;
+  }
+
+  .board {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+
+  .team-headers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .team-name {
+    text-align: center;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .team-name.t1 { background: linear-gradient(135deg, #ec4899, #f43f5e); }
+  .team-name.t2 { background: linear-gradient(135deg, #06b6d4, #0ea5e9); }
+  .team-name.t3 { background: linear-gradient(135deg, #f59e0b, #f97316); }
+  .team-name.t4 { background: linear-gradient(135deg, #10b981, #14b8a6); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .card {
+    perspective: 1000px;
+    height: 120px;
+    cursor: pointer;
+  }
+
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.7s;
+    transform-style: preserve-3d;
+  }
+  .card.flipped .card-inner { transform: rotateY(180deg); }
+
+  .card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+
+  .card-front {
+    font-size: 2rem;
+    font-weight: 800;
+    border: 1px solid rgba(255,255,255,0.15);
+    transition: transform 0.25s;
+  }
+  .card:hover .card-front { transform: scale(1.03); }
+
+  .p10 .card-front { background: linear-gradient(135deg, #065f46, #10b981); }
+  .p20 .card-front { background: linear-gradient(135deg, #155e75, #06b6d4); }
+  .p30 .card-front { background: linear-gradient(135deg, #92400e, #f59e0b); }
+  .p40 .card-front { background: linear-gradient(135deg, #991b1b, #ef4444); }
+
+  .card-back {
+    background: #0f172a;
+    border: 1px solid rgba(167,139,250,0.4);
+    transform: rotateY(180deg);
+    flex-direction: column;
+    padding: 10px;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .q-text {
+    color: #e0e7ff;
+    font-weight: 500;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    overflow-y: auto;
+  }
+
+  .ans-btn {
+    background: linear-gradient(90deg, #a78bfa, #22d3ee);
+    border: none;
+    color: #0f172a;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: transform 0.2s;
+  }
+  .ans-btn:hover { transform: scale(1.05); }
+
+  .ans-text {
+    margin-top: 5px;
+    color: #86efac;
+    font-size: 0.68rem;
+    font-style: italic;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    text-align: left;
+    padding: 0 4px;
+  }
+  .ans-text.show {
+    max-height: 200px;
+    padding: 4px;
+    border-left: 2px solid #86efac;
+    overflow-y: auto;
+  }
+
+  .card-back::-webkit-scrollbar,
+  .q-text::-webkit-scrollbar,
+  .ans-text::-webkit-scrollbar { width: 4px; }
+  .card-back::-webkit-scrollbar-thumb,
+  .q-text::-webkit-scrollbar-thumb,
+  .ans-text::-webkit-scrollbar-thumb { background: #a78bfa; border-radius: 4px; }
+
+  footer {
+    text-align: center;
+    margin-top: 25px;
+    color: #94a3b8;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 800px) {
+    .grid, .team-headers { grid-template-columns: repeat(2, 1fr); }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧠 Психология викторинасы</h1>
+  <p class="subtitle">Конфликтінің кеңістік-уақыттық шекаралары. Конфликтінің типтік кезеңдері</p>
+</header>
+
+<div class="board">
+  <div class="team-headers">
+    <div class="team-name t1">⚡ 1-топ</div>
+    <div class="team-name t2">🔥 2-топ</div>
+    <div class="team-name t3">✨ 3-топ</div>
+    <div class="team-name t4">💎 4-топ</div>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<footer>© Психология пәні — Біздің өміріміздегі конфликтілер</footer>
+
+<script>
+  // 16 сұрақ: 4 деңгей × 4 топ
+  // [level][team] = {q, a}
+  const data = [
+    // 10 балл (жеңіл)
+    [
+      { q: "Конфликт дегеніміз не?", a: "Екі немесе одан да көп тараптың қарама-қайшы мүдделері мен көзқарастарының қақтығысы." },
+      { q: "Инцидент дегеніміз не?", a: "Жасырын шиеленісті ашық қақтығысқа айналдыратын нақты оқиға, түрткі." },
+      { q: "Конфликтіге қатысушылар қалай аталады?", a: "Конфликт субъектілері немесе оппоненттер." },
+      { q: "Конфликтінің қанша типтік кезеңі бар?", a: "6 кезең: конфликтіге дейінгі, инцидент, эскалация, кульминация, аяқталу, постконфликт." }
+    ],
+    // 20 балл (орташа)
+    [
+      { q: "Конфликтінің кеңістік шекарасы нені білдіреді?", a: "Конфликт өтетін нақты территория, аумақ немесе әлеуметтік орта." },
+      { q: "Конфликтінің уақыттық шекарасы дегеніміз не?", a: "Конфликтінің басталу сәтінен толық аяқталуына дейінгі уақыт аралығы." },
+      { q: "Постконфликтілік кезең деген не?", a: "Конфликт аяқталғаннан кейінгі салдарларды жою, қатынастарды қалпына келтіру кезеңі." },
+      { q: "Латентті кезең деген не?", a: "Жасырын қарама-қайшылықтар жинақталатын, бірақ әлі ашық қақтығыс болмаған кезең." }
+    ],
+    // 30 балл (күрделі)
+    [
+      { q: "Конфликтінің типтік кезеңдерін ретімен атаңыз.", a: "1) Конфликтіге дейінгі жағдай, 2) Инцидент, 3) Эскалация, 4) Кульминация, 5) Аяқталу, 6) Постконфликт." },
+      { q: "Конфликтіге дейінгі кезеңнің ерекшелігі неде?", a: "Жасырын қарама-қайшылықтардың жинақталуы, тараптардың теріс көзқарасының өсуі, шиеленіс қалыптасуы." },
+      { q: "Конфликтінің субъектілік шекарасы нені анықтайды?", a: "Қатысушылардың саны мен құрамын — жеке тұлғааралық, топтық, не тұлға-топ арасындағы екенін." },
+      { q: "Конфликт кеңістігіне қандай факторлар әсер етеді?", a: "Тараптардың әрекет ету аумағы, әлеуметтік жағдай, қарым-қатынас саласы және сыртқы орта." }
+    ],
+    // 40 балл (өте күрделі)
+    [
+      { q: "Эскалация кезеңінің психологиялық ерекшеліктерін ашып беріңіз.", a: "Қарсыласудың күрт шиеленісуі, эмоциялардың күшеюі, рационалды дәлелдерден эмоционалды шабуылдарға ауысу, 'жау бейнесін' қалыптастыру, бастапқы себептің ұмытылуы." },
+      { q: "Кульминация кезеңін толық сипаттаңыз.", a: "Конфликтінің ең жоғарғы шыңы. Тараптар барлық ресурстарын жұмсайды, одан әрі шиелену мүмкін емес. Осы сәтте екі жақ та тоқтату қажеттігін сезіне бастайды." },
+      { q: "Конфликтіні аяқтаудың формаларын атап, түсіндіріңіз.", a: "1) Шешу — өзара келісім; 2) Реттеу — үшінші тараптың көмегі; 3) Басу — күш қолдану; 4) Жою — бір жақтың жеңілуі; 5) Басқа конфликтіге ұласу." },
+      { q: "Конфликтінің кеңістік-уақыттық шекараларын анықтаудың практикалық маңызы неде?", a: "Конфликтінің ауқымын бағалауға, басқару стратегиясын таңдауға, қатысушыларды анықтауға және оның созылуын болжауға мүмкіндік береді." }
+    ]
+  ];
+
+  const grid = document.getElementById('grid');
+  const points = [10, 20, 30, 40];
+
+  data.forEach((row, levelIdx) => {
+    row.forEach((item, teamIdx) => {
+      const card = document.createElement('div');
+      card.className = `card p${points[levelIdx]}`;
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front">${points[levelIdx]}</div>
+          <div class="card-back">
+            <div class="q-text">${item.q}</div>
+            <button class="ans-btn">💡 Жауабы</button>
+            <div class="ans-text">${item.a}</div>
+          </div>
+        </div>
+      `;
+      card.addEventListener('click', () => card.classList.toggle('flipped'));
+      const btn = card.querySelector('.ans-btn');
+      const ans = card.querySelector('.ans-text');
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        ans.classList.toggle('show');
+        btn.textContent = ans.classList.contains('show') ? '🙈 Жасыру' : '💡 Жауабы';
+      });
+      grid.appendChild(card);
+    });
+  });
+</script>
+
+</body>
+</html>
